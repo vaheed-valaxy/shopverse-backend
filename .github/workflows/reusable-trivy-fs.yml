@@ -34,7 +34,7 @@ jobs:
         with:
           version: v0.72.0
           scan-type: fs
-          scan-ref: ${{ inputs.service-name }}
+          scan-ref: .  # ${{ inputs.service-name }}
           format: sarif
           output: trivy-fs-${{ inputs.service-name }}.sarif
           severity: HIGH,CRITICAL
