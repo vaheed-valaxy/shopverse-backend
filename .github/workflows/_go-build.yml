@@ -254,7 +254,8 @@ jobs:
 
       dockerfile: ${{ inputs.dockerfile }}
       build-context: ${{ inputs.build-context }}
-
+      
+      image-build: ${{ inputs.image-build }}
       image-scan: ${{ inputs.image-scan }}
       image-push-ecr: ${{ inputs.image-push-ecr }}
 
