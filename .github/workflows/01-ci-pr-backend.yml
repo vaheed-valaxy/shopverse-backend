@@ -25,7 +25,7 @@ jobs:
       runner: ubuntu-latest
       
       gitleaks-scan: true
-      trivy-fs-scan: false
+      trivy-fs-scan: true
       codeql-scan: false
 
       sonarqube-scan: false
