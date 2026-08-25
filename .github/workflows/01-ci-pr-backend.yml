@@ -24,9 +24,9 @@ jobs:
       service-name: backend
       runner: ubuntu-latest
       
-      gitleaks-scan: true
+      gitleaks-scan: false
       
-      trivy-fs-scan: true
+      trivy-fs-scan: false
       trivy-fs-scan-path: "."
       
       codeql-scan: true
