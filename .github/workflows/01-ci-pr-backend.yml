@@ -26,6 +26,7 @@ jobs:
       
       gitleaks-scan: true
       trivy-fs-scan: true
+      trivy-fs-scan-path: "."
       codeql-scan: false
 
       sonarqube-scan: false
