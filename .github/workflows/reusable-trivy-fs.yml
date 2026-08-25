@@ -76,8 +76,7 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
-          # Generate report even when vulnerabilities exist
-          exit-code: 0
+          exit-code: 0   # 1
 
 
       # ======================================================
