@@ -140,13 +140,12 @@ jobs:
       sonar-host-url: ""
 
       # =========================================================================
-      # Dockerfile Security
+      # Dockerfile Security Scan
       # =========================================================================
 
       dockerfile-scan: true
       dockerfile: Dockerfile
-      build-context: "."
-      
+            
       hadolint-dockerfile-scan: false
       trivy-dockerfile-scan: true
       opa-conftest-dockerfile-scan: false
@@ -156,6 +155,8 @@ jobs:
       # =========================================================================
 
       image-build: false
+      build-context: "."
+      
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
       ecr-repository: ${{ needs.Aws-Params-Job.outputs.ecr-repository }}
       aws-region: ${{ needs.Aws-Params-Job.outputs.aws-region }}
