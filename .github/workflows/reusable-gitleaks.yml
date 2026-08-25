@@ -50,5 +50,6 @@ jobs:
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: results.sarif
+          # sarif_file: results.sarif
+          sarif_file: /repo/gitleaks-report.sarif
           category: gitleaks-${{ inputs.service-name }}
