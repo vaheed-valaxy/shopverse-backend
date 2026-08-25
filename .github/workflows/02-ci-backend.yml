@@ -133,7 +133,7 @@ jobs:
       # Application Security Scans
       # =========================================================================
 
-      gitleaks-scan: false
+      gitleaks-scan: true
       trivy-fs-scan: false
       codeql-scan: false
       sonarqube-scan: false
@@ -146,7 +146,7 @@ jobs:
       dockerfile-scan: false
       dockerfile: Dockerfile
             
-      hadolint-dockerfile-scan: false
+      hadolint-dockerfile-scan: true
       trivy-dockerfile-scan: false
       opa-conftest-dockerfile-scan: false
 
