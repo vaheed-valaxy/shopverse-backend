@@ -96,6 +96,8 @@ jobs:
               | select(
                   .state == "open"
                   and
+                  .tool.name == "CodeQL"
+                  and
                   (
                     .rule.security_severity_level == "high"
                     or
@@ -105,6 +107,15 @@ jobs:
             ]
             | length
           ')
+
+          echo "High/Critical CodeQL findings: $high"
+
+          if [ "$high" -gt 0 ]; then
+            echo "❌ High/Critical CodeQL vulnerabilities found."
+            exit 1
+          fi
+
+          echo "✅ No High/Critical CodeQL vulnerabilities found."
 
           echo "High/Critical CodeQL findings: $high"
 
