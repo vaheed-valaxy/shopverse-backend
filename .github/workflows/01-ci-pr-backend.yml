@@ -21,7 +21,7 @@ jobs:
   Pr-Check-Job:
     uses: ./.github/workflows/_go-pr-check.yml
     with:
-      service-name: app/shopverse/backend
+      service-name: backend
       runner: ubuntu-latest
       
       gitleaks-scan: true
