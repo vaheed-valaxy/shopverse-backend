@@ -7,13 +7,19 @@ on:
         description: "Service Name"
         required: true
         type: string
-      
+
+      scan-path:
+        description: "Path to scan"
+        required: false
+        type: string
+        default: "."
+
       runner:
         description: "Runner label"
         required: false
         type: string
         default: ubuntu-latest
-        
+
 jobs:
   Trivy-Fs-Scan-Job:
     name: Trivy FS Scan
@@ -24,25 +30,51 @@ jobs:
       security-events: write
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Verify Scan Path
+        run: |
+          echo "Service: ${{ inputs.service-name }}"
+          echo "Scan path: ${{ inputs.scan-path }}"
+
+          if [ ! -d "${{ inputs.scan-path }}" ]; then
+            echo "ERROR: Scan path does not exist"
+            exit 1
+          fi
+
+          ls -la "${{ inputs.scan-path }}"
 
       - name: Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           version: v0.72.0
           scan-type: fs
-          scan-ref: .  # ${{ inputs.service-name }}
+          scan-ref: ${{ inputs.scan-path }}
           format: sarif
           output: trivy-fs-${{ inputs.service-name }}.sarif
           severity: HIGH,CRITICAL
           ignore-unfixed: true
-          exit-code: 0   # 1
+          exit-code: 0
+
+      - name: Verify SARIF File
+        if: always()
+        run: |
+          echo "Checking SARIF file..."
+
+          if [ -f "trivy-fs-${{ inputs.service-name }}.sarif" ]; then
+            echo "SARIF file exists"
+            ls -lh "trivy-fs-${{ inputs.service-name }}.sarif"
+          else
+            echo "ERROR: SARIF file was not generated"
+            exit 1
+          fi
 
       - name: Upload Trivy FS SARIF to GitHub Security tab
-        if: always()
+        if: always() && hashFiles('trivy-fs-${{ inputs.service-name }}.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-fs-${{ inputs.service-name }}.sarif
