@@ -74,3 +74,43 @@ jobs:
         uses: github/codeql-action/analyze@v4 
         with: 
           category: "/language:go"
+
+      # ------------------------------------------------
+      # ** Enforce CODEQL security policy **
+      # ------------------------------------------------
+      - name: Enforce CodeQL Security Policy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Checking CodeQL security findings..."
+
+          alerts=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${REPO}/code-scanning/alerts" \
+            --paginate)
+
+          high=$(echo "$alerts" | jq '
+            [
+              .[]
+              | select(
+                  .state == "open"
+                  and
+                  (
+                    .rule.security_severity_level == "high"
+                    or
+                    .rule.security_severity_level == "critical"
+                  )
+              )
+            ]
+            | length
+          ')
+
+          echo "High/Critical CodeQL findings: $high"
+
+          if [ "$high" -gt 0 ]; then
+            echo "❌ High/Critical CodeQL vulnerabilities found."
+            exit 1
+          fi
+
+          echo "✅ No High/Critical CodeQL vulnerabilities found."
