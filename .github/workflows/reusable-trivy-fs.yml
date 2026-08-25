@@ -8,7 +8,7 @@ on:
         required: true
         type: string
 
-      scan-path:
+      trivy-fs-scan-path:
         description: "Path to scan"
         required: false
         type: string
@@ -39,21 +39,21 @@ jobs:
       - name: Verify Scan Path
         run: |
           echo "Service: ${{ inputs.service-name }}"
-          echo "Scan path: ${{ inputs.scan-path }}"
+          echo "Scan path: ${{ inputs.trivy-fs-scan-path }}"
 
-          if [ ! -d "${{ inputs.scan-path }}" ]; then
+          if [ ! -d "${{ inputs.trivy-fs-scan-path }}" ]; then
             echo "ERROR: Scan path does not exist"
             exit 1
           fi
 
-          ls -la "${{ inputs.scan-path }}"
+          ls -la "${{ inputs.trivy-fs-scan-path }}"
 
       - name: Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           version: v0.72.0
           scan-type: fs
-          scan-ref: ${{ inputs.scan-path }}
+          scan-ref: ${{ inputs.trivy-fs-scan-path }}
           format: sarif
           output: trivy-fs-${{ inputs.service-name }}.sarif
           severity: HIGH,CRITICAL
