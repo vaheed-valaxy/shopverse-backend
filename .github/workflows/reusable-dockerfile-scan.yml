@@ -78,7 +78,7 @@ jobs:
       # Hadolint
       # ============================================================
 
-      - name: Hadolint Scan
+      - name: Hadolint Dockerfile Scan
         if: ${{ inputs.hadolint-dockerfile-scan }}
         uses: hadolint/hadolint-action@v3.3.0
         with:
