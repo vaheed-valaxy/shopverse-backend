@@ -59,12 +59,12 @@ jobs:
 
       # Download Go dependencies
       - name: Download Go dependencies
-        working-directory: ${{ inputs.service-name }}
+        # working-directory: ${{ inputs.service-name }}
         run: go mod download
 
       # Build Go Application
       - name: Build Go App manually
-        working-directory: ${{ inputs.service-name }}
+        # working-directory: ${{ inputs.service-name }}
         run: go build ./...
           
       # Run CodeQL analysis (Uploads sarif report to Github Security Tab)
