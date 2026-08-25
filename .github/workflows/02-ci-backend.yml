@@ -134,8 +134,8 @@ jobs:
       # =========================================================================
 
       gitleaks-scan: true
-      trivy-fs-scan: false
-      codeql-scan: false
+      trivy-fs-scan: true
+      codeql-scan: true
       sonarqube-scan: false
       sonar-host-url: ""
 
@@ -147,7 +147,7 @@ jobs:
       dockerfile: Dockerfile
             
       hadolint-dockerfile-scan: true
-      trivy-dockerfile-scan: false
+      trivy-dockerfile-scan: true
       opa-conftest-dockerfile-scan: false
 
       # =========================================================================
