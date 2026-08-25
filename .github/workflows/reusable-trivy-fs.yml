@@ -3,22 +3,35 @@ name: Reusable - Trivy FS Scan
 on:
   workflow_call:
     inputs:
+      # ======================================================
+      # General
+      # ======================================================
       service-name:
         description: "Service Name"
         required: true
         type: string
-
-      trivy-fs-scan-path:
-        description: "Path to scan"
-        required: false
-        type: string
-        default: "."
 
       runner:
         description: "Runner label"
         required: false
         type: string
         default: ubuntu-latest
+
+      # ======================================================
+      # Trivy
+      # ======================================================
+      
+      trivy-version:
+        description: "Trivy version"
+        required: false
+        type: string
+        default: v0.72.0
+        
+      trivy-fs-scan-path:
+        description: "Path to scan"
+        required: false
+        type: string
+        default: "."
 
 jobs:
 
@@ -41,43 +54,58 @@ jobs:
         with:
           fetch-depth: 0
 
-
       # ======================================================
       # Verify Scan Path
       # ======================================================
 
       - name: Verify Scan Path
         run: |
+          echo "---------------------------------------------- #
           echo "Service: ${{ inputs.service-name }}"
           echo "Scan path: ${{ inputs.trivy-fs-scan-path }}"
+          echo "---------------------------------------------- #
 
           if [ ! -d "${{ inputs.trivy-fs-scan-path }}" ]; then
-            echo "ERROR: Scan path does not exist"
+            echo "ERROR: Scan path does not exist: ${{ inputs.trivy-fs-scan-path }}"
             exit 1
           fi
-
+          echo " Scan path contents: "
           ls -la "${{ inputs.trivy-fs-scan-path }}"
 
+      # ======================================================
+      # Install Trivy
+      # ======================================================
+
+      - name: Setup Trivy
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+        with:
+          version: ${{ inputs.trivy-version }}
+          cache: true
+
+      # ======================================================
+      # Verify Trivy
+      # ======================================================
+
+      - name: Verify Trivy Installation
+        run: |
+          echo "Trivy version:"
+          trivy --version
 
       # ======================================================
       # Trivy FS Scan → JSON
       # ======================================================
 
       - name: Trivy Filesystem Scan
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          version: v0.72.0
-          scan-type: fs
-          scan-ref: ${{ inputs.trivy-fs-scan-path }}
+        continue-on-error: true
+        run: |
+          trivy fs \
+          --severity HIGH,CRITICAL \
+          --ignore-unfixed \
+          --format json \
+          --output trivy-fs-${{ inputs.service-name }}.json \
+          "${{ inputs.trivy-fs-scan-path }}"
 
-          format: json
-          output: trivy-fs-${{ inputs.service-name }}.json
-
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-
-          exit-code: 0   # 1
-
+      
 
       # ======================================================
       # Verify JSON
@@ -96,7 +124,6 @@ jobs:
             exit 1
           fi
 
-
       # ======================================================
       # Upload JSON Artifact
       # ======================================================
@@ -108,8 +135,7 @@ jobs:
           name: trivy-fs-report-${{ inputs.service-name }}
           path: trivy-fs-${{ inputs.service-name }}.json
           if-no-files-found: warn
-          retention-days: 1
-
+          retention-days: 0
 
       # ======================================================
       # Convert JSON → SARIF
@@ -122,7 +148,6 @@ jobs:
             --format sarif \
             --output trivy-fs-${{ inputs.service-name }}.sarif \
             trivy-fs-${{ inputs.service-name }}.json
-
 
       # ======================================================
       # Verify SARIF
@@ -140,7 +165,6 @@ jobs:
             echo "ERROR: SARIF file was not generated"
             exit 1
           fi
-
 
       # ======================================================
       # Upload SARIF → GitHub Code Scanning
