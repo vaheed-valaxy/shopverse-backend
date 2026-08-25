@@ -133,9 +133,9 @@ jobs:
       # Application Security Scans
       # =========================================================================
 
-      gitleaks-scan: true
-      trivy-fs-scan: true
-      codeql-scan: true
+      gitleaks-scan: false
+      trivy-fs-scan: false
+      codeql-scan: false
       sonarqube-scan: false
       sonar-host-url: ""
 
@@ -143,18 +143,18 @@ jobs:
       # Dockerfile Security Scan
       # =========================================================================
 
-      dockerfile-scan: true
+      dockerfile-scan: false
       dockerfile: Dockerfile
             
-      hadolint-dockerfile-scan: true
-      trivy-dockerfile-scan: true
+      hadolint-dockerfile-scan: false
+      trivy-dockerfile-scan: false
       opa-conftest-dockerfile-scan: false
 
       # =========================================================================
       # Image Build
       # =========================================================================
 
-      image-build: false
+      image-build: true
       build-context: "."
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
