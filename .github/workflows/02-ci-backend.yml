@@ -143,7 +143,7 @@ jobs:
       # Dockerfile Security
       # =========================================================================
 
-      dockerfile-scan: false
+      dockerfile-scan: true
       dockerfile: backend/Dockerfile
       build-context: backend
       
