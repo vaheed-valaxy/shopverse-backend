@@ -21,6 +21,7 @@ on:
         default: ubuntu-latest
 
 jobs:
+
   Trivy-Fs-Scan-Job:
     name: Trivy FS Scan
     runs-on: ${{ inputs.runner }}
@@ -31,10 +32,19 @@ jobs:
 
     steps:
 
+      # ======================================================
+      # Checkout
+      # ======================================================
+
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+
+      # ======================================================
+      # Verify Scan Path
+      # ======================================================
 
       - name: Verify Scan Path
         run: |
@@ -48,17 +58,31 @@ jobs:
 
           ls -la "${{ inputs.trivy-fs-scan-path }}"
 
+
+      # ======================================================
+      # Trivy FS Scan → JSON
+      # ======================================================
+
       - name: Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           version: v0.72.0
           scan-type: fs
           scan-ref: ${{ inputs.trivy-fs-scan-path }}
-          format: sarif
+
+          format: json
           output: trivy-fs-${{ inputs.service-name }}.json
+
           severity: HIGH,CRITICAL
           ignore-unfixed: true
+
+          # Generate report even when vulnerabilities exist
           exit-code: 0
+
+
+      # ======================================================
+      # Verify JSON
+      # ======================================================
 
       - name: Verify JSON File
         if: always()
@@ -66,12 +90,17 @@ jobs:
           echo "Checking JSON file..."
 
           if [ -f "trivy-fs-${{ inputs.service-name }}.json" ]; then
-            echo "SARIF file exists"
+            echo "JSON file exists"
             ls -lh "trivy-fs-${{ inputs.service-name }}.json"
           else
             echo "ERROR: JSON file was not generated"
             exit 1
           fi
+
+
+      # ======================================================
+      # Upload JSON Artifact
+      # ======================================================
 
       - name: Upload Trivy FS JSON Report
         if: always()
@@ -80,7 +109,12 @@ jobs:
           name: trivy-fs-report-${{ inputs.service-name }}
           path: trivy-fs-${{ inputs.service-name }}.json
           if-no-files-found: warn
-          retention-days: 0
+          retention-days: 1
+
+
+      # ======================================================
+      # Convert JSON → SARIF
+      # ======================================================
 
       - name: Convert Trivy JSON to SARIF
         if: always()
@@ -89,6 +123,11 @@ jobs:
             --format sarif \
             --output trivy-fs-${{ inputs.service-name }}.sarif \
             trivy-fs-${{ inputs.service-name }}.json
+
+
+      # ======================================================
+      # Verify SARIF
+      # ======================================================
 
       - name: Verify SARIF File
         if: always()
@@ -103,7 +142,12 @@ jobs:
             exit 1
           fi
 
-      - name: Upload Trivy FS SARIF to GitHub Security tab
+
+      # ======================================================
+      # Upload SARIF → GitHub Code Scanning
+      # ======================================================
+
+      - name: Upload Trivy FS SARIF
         if: ${{ always() && hashFiles(format('trivy-fs-{0}.sarif', inputs.service-name)) != '' }}
         uses: github/codeql-action/upload-sarif@v4
         with:
