@@ -24,6 +24,21 @@ on:
         required: true
         type: string
 
+      image-build:
+        description: "Enable Image Build"
+        required: true
+        type: boolean
+
+      image-scan:
+        description: "Enable Image Scan"
+        required: true
+        type: boolean
+
+      image-push-ecr:
+        description: "Enable Image Push to ECR"
+        required: true
+        type: boolean
+
       ecr-registry:
         description: "ECR Registry URL"
         required: true
@@ -89,6 +104,7 @@ jobs:
           echo "image_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build Image
+        if: ${{ inputs.image-build }}
         id: image-build
         run: |
           IMAGE="${{ inputs.ecr-registry }}/${{ inputs.ecr-repository }}"
@@ -103,19 +119,8 @@ jobs:
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
           echo "image_with_tag=$IMAGE_WITH_TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Verify AWS CLI
-        run: aws --version
-
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ inputs.aws-ecr-role-arn }}
-          aws-region: ${{ inputs.aws-region }}
-
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity  
-        
       - name: Trivy — Image vulnerability scan
+        if: ${{ inputs.image-scan }}
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           version: v0.72.0
@@ -131,9 +136,25 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-image-${{ inputs.service-name }}.sarif
-          category: trivy-image-${{ inputs.service-name }}   
+          category: trivy-image-${{ inputs.service-name }} 
+
+      - name: Verify AWS CLI
+        if: ${{ inputs.image-push-ecr }}
+        run: aws --version
+
+      - name: Configure AWS credentials (OIDC)
+        if: ${{ inputs.image-push-ecr }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.aws-ecr-role-arn }}
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Verify AWS identity
+        if: ${{ inputs.image-push-ecr }}
+        run: aws sts get-caller-identity    
 
       - name: Push image to ECR
+        if: ${{ inputs.image-push-ecr }}
         id: push
         run: |
           IMAGE="${{ steps.image-build.outputs.image }}"
@@ -156,5 +177,5 @@ jobs:
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
           echo "image_digest=$DIGEST" >> "$GITHUB_OUTPUT"
           echo "image_with_digest=$IMAGE_WITH_DIGEST" >> "$GITHUB_OUTPUT"  
-          echo "image_with_tag=$IMAGE_WITH_TAG" >> "$GITHUB_OUTPUT"
+          echo "image_with_tag=$IMAGE_WITH_TAG" >> "$GITHUB_OUTPUT"      
           
