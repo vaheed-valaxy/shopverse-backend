@@ -38,6 +38,12 @@ on:
         type: boolean
         default: false
 
+      scan-path:
+        description: "Path to scan"
+        required: false
+        type: string
+        default: "."
+
       codeql-scan:
         description: "Enable Codeql Scan"
         required: false
@@ -79,6 +85,7 @@ jobs:
     with:
       service-name: ${{ inputs.service-name }}
       runner: ${{ inputs.runner }}
+      scan-path: ${{ inputs.scan-path }}
 
   Codeql-Analysis-Job:
     if: ${{ inputs.codeql-scan }}
