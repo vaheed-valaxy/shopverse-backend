@@ -106,6 +106,18 @@ on:
         type: boolean
         default: false
 
+      image-scan:
+        description: "Enable Image Scan"
+        required: false
+        type: boolean
+        default: false
+
+      image-push-ecr:
+        description: "Enable Image Push to ECR"
+        required: false
+        type: boolean
+        default: false
+
       ecr-registry:
         description: "ECR Registry URL"
         required: false
@@ -242,6 +254,9 @@ jobs:
 
       dockerfile: ${{ inputs.dockerfile }}
       build-context: ${{ inputs.build-context }}
+
+      image-scan: ${{ inputs.image-scan }}
+      image-push-ecr: ${{ inputs.image-push-ecr }}
 
       ecr-registry: ${{ inputs.ecr-registry }}
       ecr-repository: ${{ inputs.ecr-repository }}
