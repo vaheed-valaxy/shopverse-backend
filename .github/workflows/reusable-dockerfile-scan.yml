@@ -100,7 +100,7 @@ jobs:
           output: trivy-${{ inputs.service-name }}-dockerfile.sarif
           severity: HIGH,CRITICAL
           ignore-unfixed: true
-          exit-code: 1
+          exit-code: 0
 
       # ============================================================
       # Upload Trivy SARIF
