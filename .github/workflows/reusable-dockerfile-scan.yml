@@ -84,7 +84,7 @@ jobs:
         with:
           dockerfile: ${{ inputs.dockerfile }}
           failure-threshold: error
-          output-file: hadolint-${{ inputs.service-name }}.txt
+          output-file: hadolint-${{ inputs.service-name }}-Dockerfile.txt
           format: tty
 
       - name: Upload Hadolint Report
