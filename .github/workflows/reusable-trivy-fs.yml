@@ -55,10 +55,40 @@ jobs:
           scan-type: fs
           scan-ref: ${{ inputs.trivy-fs-scan-path }}
           format: sarif
-          output: trivy-fs-${{ inputs.service-name }}.sarif
+          output: trivy-fs-${{ inputs.service-name }}.json
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: 0
+
+      - name: Verify JSON File
+        if: always()
+        run: |
+          echo "Checking JSON file..."
+
+          if [ -f "trivy-fs-${{ inputs.service-name }}.json" ]; then
+            echo "SARIF file exists"
+            ls -lh "trivy-fs-${{ inputs.service-name }}.json"
+          else
+            echo "ERROR: JSON file was not generated"
+            exit 1
+          fi
+
+      - name: Upload Trivy FS JSON Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-fs-report-${{ inputs.service-name }}
+          path: trivy-fs-${{ inputs.service-name }}.json
+          if-no-files-found: warn
+          retention-days: 0
+
+      - name: Convert Trivy JSON to SARIF
+        if: always()
+        run: |
+          trivy convert \
+            --format sarif \
+            --output trivy-fs-${{ inputs.service-name }}.sarif \
+            trivy-fs-${{ inputs.service-name }}.json
 
       - name: Verify SARIF File
         if: always()
