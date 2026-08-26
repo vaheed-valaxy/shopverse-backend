@@ -57,7 +57,9 @@ jobs:
       # - name: Autobuild 
       #   uses: github/codeql-action/autobuild@v4
 
-      - run: go mod tidy
+      # Update go.sum
+      - name: Update go.sum
+        run: go mod tidy
        
       # Download Go dependencies
       - name: Download Go dependencies
