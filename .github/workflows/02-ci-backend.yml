@@ -95,6 +95,13 @@ jobs:
       aws-ecr-role-arn: ${{ steps.aws-params.outputs.aws-ecr-role-arn }}
 
     steps:
+      - name: Show GitHub Repository IDs
+        run: |
+          echo "Repository       : ${{ github.repository }}"
+          echo "Repository Owner : ${{ github.repository_owner }}"
+          echo "Owner ID         : ${{ github.repository_owner_id }}"
+          echo "Repository ID    : ${{ github.repository_id }}"
+          
       - name: Construct AWS Parameters
         id: aws-params
         run: |
@@ -154,11 +161,11 @@ jobs:
       # Image Build
       # =========================================================================
 
-      image-build: true
+      image-build: false
       build-context: "."
 
-      image-scan: true
-      image-push-ecr: true
+      image-scan: false
+      image-push-ecr: false
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
       ecr-repository: ${{ needs.Aws-Params-Job.outputs.ecr-repository }}
