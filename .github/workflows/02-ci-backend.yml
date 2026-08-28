@@ -71,7 +71,7 @@ env:
   AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
   AWS_REGION: us-east-1
   AWS_ECR_ROLE_ARN: ${{ vars.AWS_ECR_ROLE_ARN }}
-  ECR_REPOSITORY: backend
+  ECR_REPOSITORY: "shopverse/backend"
   # GITOPS_REPO: ${{ vars.GITOPS_REPO }}
 
 # =======================================================================================
@@ -133,7 +133,7 @@ jobs:
       # Application Security Scans
       # =========================================================================
 
-      gitleaks-scan: false
+      gitleaks-scan: true
       trivy-fs-scan: false
       codeql-scan: false
       sonarqube-scan: false
@@ -143,10 +143,10 @@ jobs:
       # Dockerfile Security Scan
       # =========================================================================
 
-      dockerfile-scan: false
+      dockerfile-scan: true
       dockerfile: Dockerfile
             
-      hadolint-dockerfile-scan: false
+      hadolint-dockerfile-scan: true
       trivy-dockerfile-scan: false
       opa-conftest-dockerfile-scan: false
 
@@ -154,11 +154,11 @@ jobs:
       # Image Build
       # =========================================================================
 
-      image-build: false
+      image-build: true
       build-context: "."
 
-      image-scan: false
-      image-push-ecr: false
+      image-scan: true
+      image-push-ecr: true
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
       ecr-repository: ${{ needs.Aws-Params-Job.outputs.ecr-repository }}
