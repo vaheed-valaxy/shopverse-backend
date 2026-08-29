@@ -150,10 +150,10 @@ jobs:
       # Dockerfile Security Scan
       # =========================================================================
 
-      dockerfile-scan: false
+      dockerfile-scan: true
       dockerfile: Dockerfile
             
-      hadolint-dockerfile-scan: false
+      hadolint-dockerfile-scan: true
       trivy-dockerfile-scan: false
       opa-conftest-dockerfile-scan: false
 
@@ -161,11 +161,11 @@ jobs:
       # Image Build
       # =========================================================================
 
-      image-build: false
+      image-build: true
       build-context: "."
 
       image-scan: false
-      image-push-ecr: false
+      image-push-ecr: true
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
       ecr-repository: ${{ needs.Aws-Params-Job.outputs.ecr-repository }}
@@ -188,7 +188,7 @@ jobs:
       # GitOps
       # =========================================================================
       
-      update-helm-values: false
+      update-helm-values: true
       gitops-repo: ${{ vars.GITOPS_REPO }}
       helm-values-file: envs/dev/values-backend.yaml
 
