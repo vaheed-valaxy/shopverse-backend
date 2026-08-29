@@ -50,6 +50,8 @@ jobs:
     env:
       GITOPS_DIR: "_gitops"
       VALUES_FILE: "${{ inputs.helm-values-file }}"
+      IMAGE: "${{ inputs.image }}"
+      DIGEST: "${{ inputs.image-digest }}"
 
     steps:
 
@@ -72,11 +74,11 @@ jobs:
         working-directory: ${{ env.GITOPS_DIR }}
         run: |
           if [ ! -f "$VALUES_FILE" ]; then
-            echo "ERROR: Values file not found: $VALUES_FILE"
+            echo "ERROR: Helm values file not found: $VALUES_FILE"
             exit 1
           fi
 
-          echo "Values file found: $VALUES_FILE"
+          echo "Helm values file found: $VALUES_FILE"
           
       # --------------------------------------------------
       # Print Image and Digest
@@ -84,8 +86,25 @@ jobs:
 
       - name: Print Image and Digest
         run: |
-          echo "Image : ${{ inputs.image }}"
-          echo "Digest: ${{ inputs.image-digest }}"
+          echo "Image : $IMAGE"
+          echo "Digest: $DIGEST"
+
+          
+      # --------------------------------------------------
+      # Install YQ
+      # --------------------------------------------------
+
+      - name: Install yq
+        run: |
+          YQ_VERSION="v4.47.2"
+      
+          sudo wget -qO /usr/local/bin/yq \
+            "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
+      
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Verify yq
+        run: yq --version
 
       # --------------------------------------------------
       # Update Helm values
@@ -94,18 +113,16 @@ jobs:
       - name: Update Image Digest
         working-directory: ${{ env.GITOPS_DIR }}
         run: |
-          IMAGE="${{ inputs.image }}"
-          DIGEST="${{ inputs.image-digest }}"
-
           echo "----------- Updating ---------------"
           echo "File   : $VALUES_FILE"
           echo "Image  : $IMAGE"
           echo "Digest : $DIGEST"
           echo "------------------------------------"
-
-          sed -i "s|digest: .*|digest: $DIGEST|g" "$VALUES_FILE"
           
-        #  yq -i '.image.digest = strenv(DIGEST)' "$VALUES_FILE"
+          yq -i '.image.digest = strenv(DIGEST)' "$VALUES_FILE"
+
+          echo "Updated digest:"
+          yq '.image.digest' "$VALUES_FILE"
 
       # --------------------------------------------------
       # Show updated values
@@ -190,8 +207,8 @@ jobs:
 
           **Digest:** $DIGEST
 
-          This PR was automatically created by the **CI pipeline**.
+          This PR was automatically created by: **CI pipeline**.
 
-          After merge, Argo CD will reconcile the updated Helm values.
+          ***After merge***, Argo CD will reconcile the updated Helm values.
           EOF
           )"
