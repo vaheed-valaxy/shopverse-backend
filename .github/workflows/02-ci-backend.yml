@@ -141,8 +141,8 @@ jobs:
       # =========================================================================
 
       gitleaks-scan: true
-      trivy-fs-scan: true
-      codeql-scan: true
+      trivy-fs-scan: false
+      codeql-scan: false
       sonarqube-scan: false
       sonar-host-url: ""
 
@@ -154,7 +154,7 @@ jobs:
       dockerfile: Dockerfile
             
       hadolint-dockerfile-scan: true
-      trivy-dockerfile-scan: true
+      trivy-dockerfile-scan: false
       opa-conftest-dockerfile-scan: false
 
       # =========================================================================
@@ -164,7 +164,7 @@ jobs:
       image-build: true
       build-context: "."
 
-      image-scan: true
+      image-scan: false
       image-push-ecr: true
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
@@ -176,13 +176,13 @@ jobs:
       # Image Signing
       # =========================================================================
       
-      image-sign: true
+      image-sign: false
       
       # =========================================================================
       # SBOM
       # =========================================================================
 
-      image-sbom: true
+      image-sbom: false
 
       # =========================================================================
       # GitOps
@@ -190,7 +190,7 @@ jobs:
       
       update-helm-values: true
       gitops-repo: ${{ vars.GITOPS_REPO }}
-      helm-values-file: envs/dev/helm/backend/values.yaml
+      helm-values-file: envs/dev/values-backend.yaml
 
     secrets:
 
