@@ -233,12 +233,9 @@ jobs:
           echo "*** Pushing Docker Image With SHA-Tag ***"
           docker push "$IMAGE_WITH_TAG"
 
-          # docker tag "$IMAGE_WITH_TAG" "$IMAGE_WITH_LATEST"
-          
-          # docker tag "$IMAGE" "$IMAGE_WITH_LATEST"
+          docker tag "$IMAGE_WITH_TAG" "$IMAGE_WITH_LATEST"
           echo "*** Pushing Docker Image With LATEST-Tag ***"
-          docker push "$IMAGE"
-          # docker push "$IMAGE_WITH_LATEST"
+          docker push "$IMAGE_WITH_LATEST"
 
           # Capture the content-addressable DIGEST for immutable signing reference
           DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE_WITH_TAG" | awk -F@ '{print $2}')
