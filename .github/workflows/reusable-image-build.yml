@@ -119,18 +119,14 @@ jobs:
           IMAGE="${{ inputs.ecr-registry }}/${{ inputs.ecr-repository }}"
           TAG="${{ steps.meta.outputs.image_tag }}"
           IMAGE_WITH_TAG="$IMAGE:$TAG"
-          IMAGE_WITH_LATEST="$IMAGE:latest"
 
           docker build \
             -t "$IMAGE_WITH_TAG" \
             -f "${{ inputs.dockerfile }}" \
             "${{ inputs.build-context }}"
 
-          docker tag "$IMAGE_WITH_TAG" "$IMAGE_WITH_LATEST"
-
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
           echo "image_with_tag=$IMAGE_WITH_TAG" >> "$GITHUB_OUTPUT"
-          echo "image_with_latest=$IMAGE_WITH_LATEST" >> "GITHUB_OUTPUT"
 
       # -------------------------------------------------------------------
       # Scan Docker Image using Trivy
@@ -225,7 +221,7 @@ jobs:
         run: |
           IMAGE="${{ steps.image-build.outputs.image }}"
           IMAGE_WITH_TAG="${{ steps.image-build.outputs.image_with_tag }}"
-          IMAGE_WITH_LATEST="${{ steps.image-build.outputs.image_with_latest }}"
+          IMAGE_WITH_LATEST="$IMAGE:latest"
           
           echo "Before Pushing"
           echo " ------------------------------------------"
@@ -237,7 +233,7 @@ jobs:
           echo "*** Pushing Docker Image With SHA-Tag ***"
           docker push "$IMAGE_WITH_TAG"
 
-          # docker tag "$IMAGE_WITH_TAG" "$IMAGE_WITH_LATEST"
+          docker tag "$IMAGE_WITH_TAG" "$IMAGE_WITH_LATEST"
           echo "*** Pushing Docker Image With LATEST-Tag ***"
           docker push "$IMAGE_WITH_LATEST"
 
