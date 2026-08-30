@@ -222,7 +222,14 @@ jobs:
           IMAGE="${{ steps.image-build.outputs.image }}"
           IMAGE_WITH_TAG="${{ steps.image-build.outputs.image_with_tag }}"
           IMAGE_WITH_LATEST="$IMAGE:latest"
-
+          
+          echo "Before Pushing"
+          echo " ------------------------------------------"
+          echo "IMAGE: $IMAGE"
+          echo "IMAGE_WITH_TAG: $IMAGE_WITH_TAG"
+          echo "IMAGE_WITH_LATEST: $IMAGE_WITH_LATEST"
+          echo " ------------------------------------------"
+          
           echo "*** Pushing Docker Image With SHA-Tag ***"
           docker push "$IMAGE_WITH_TAG"
 
