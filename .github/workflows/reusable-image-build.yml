@@ -130,7 +130,7 @@ jobs:
 
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
           echo "image_with_tag=$IMAGE_WITH_TAG" >> "$GITHUB_OUTPUT"
-          echo "image_with_latest=#IMAGE_WITH_LATEST" >> "GITHUB_OUTPUT"
+          echo "image_with_latest=$IMAGE_WITH_LATEST" >> "GITHUB_OUTPUT"
 
       # -------------------------------------------------------------------
       # Scan Docker Image using Trivy
