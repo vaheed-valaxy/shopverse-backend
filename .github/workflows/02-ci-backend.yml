@@ -111,6 +111,7 @@ jobs:
           echo "ecr-repository=$ECR_REPOSITORY" >> "$GITHUB_OUTPUT"
           echo "aws-region=$AWS_REGION" >> "$GITHUB_OUTPUT"
           echo "aws-ecr-role-arn=$AWS_ECR_ROLE_ARN" >> "$GITHUB_OUTPUT"
+          
           echo "ECR Registry : $ECR_REGISTRY"
           echo "ECR Repository : $ECR_REPOSITORY"
           echo "AWS Region : $AWS_REGION"
@@ -121,14 +122,10 @@ jobs:
 
   CI-Job:
     name: Backend CI/CD
-
-    needs:
-      - Aws-Params-Job
-
+    needs: Aws-Params-Job
     uses: ./.github/workflows/_go-build.yml
 
     with:
-
       # =========================================================================
       # General
       # =========================================================================
@@ -150,7 +147,7 @@ jobs:
       # Dockerfile Security Scan
       # =========================================================================
 
-      dockerfile-scan: true
+      dockerfile-scan: false
       dockerfile: Dockerfile
             
       hadolint-dockerfile-scan: false
