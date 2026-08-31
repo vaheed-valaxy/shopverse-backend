@@ -58,7 +58,7 @@ jobs:
   
   Gitleaks-Job:
     if: ${{ inputs.gitleaks-scan }}
-    uses: ./.github/workflows/_reusable-gitleaks.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/_reusable-gitleaks.yml@main
     with:
       service-name: ${{ inputs.service-name }} 
       runner: ${{ inputs.runner }}
@@ -66,7 +66,7 @@ jobs:
 
   Sonarqube-Job:
     if: ${{ inputs.sonarqube-scan }}
-    uses: ./.github/workflows/_reusable-sonarqube.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/_reusable-sonarqube.yml@main
     with:
       service-name: ${{ inputs.service-name }} 
       runner: ${{ inputs.runner }}
@@ -77,7 +77,7 @@ jobs:
 
   Trivy-Fs-Scan-Job:
     if: ${{ inputs.trivy-fs-scan }}
-    uses: ./.github/workflows/_reusable-trivy-fs.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/_reusable-trivy-fs.yml@main
     with:
       service-name: ${{ inputs.service-name }}
       runner: ${{ inputs.runner }}
@@ -85,7 +85,7 @@ jobs:
 
   Codeql-Analysis-Job:
     if: ${{ inputs.codeql-scan }}
-    uses: ./.github/workflows/_reusable-codeql.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/_reusable-codeql.yml@main
     with:
       service-name: ${{ inputs.service-name }}
       runner: ${{ inputs.runner }}
