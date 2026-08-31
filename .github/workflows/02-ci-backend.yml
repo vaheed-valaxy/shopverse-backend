@@ -162,7 +162,7 @@ jobs:
       build-context: "."
 
       image-scan: true
-      image-push-ecr: false
+      image-push-ecr: true
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
       ecr-repository: ${{ needs.Aws-Params-Job.outputs.ecr-repository }}
@@ -173,13 +173,13 @@ jobs:
       # Image Signing
       # =========================================================================
       
-      image-sign: false
+      image-sign: true
       
       # =========================================================================
       # SBOM
       # =========================================================================
 
-      image-sbom: false
+      image-sbom: true
 
       # =========================================================================
       # GitOps
