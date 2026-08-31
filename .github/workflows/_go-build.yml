@@ -224,10 +224,8 @@ jobs:
 
   Dockerfile-Scan-Job:
     name: Dockerfile Scan Job
-
     if: ${{ inputs.dockerfile-scan }}
-
-    uses: ./.github/workflows/reusable-dockerfile-scan.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-dockerfile-scan.yml@main 
 
     with:
       service-name: ${{ inputs.service-name }}
@@ -245,14 +243,12 @@ jobs:
 
   Image-Build-Scan-Push-Job:
     name: Docker Image Build-Scan-Push Job
-
     if: ${{ inputs.image-build }}
-
     needs:
       - Pr-Check-Job
       - Dockerfile-Scan-Job
 
-    uses: ./.github/workflows/reusable-image-build.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-image-build.yml@main
 
     with:
       service-name: ${{ inputs.service-name }}
@@ -283,7 +279,7 @@ jobs:
     needs:
       - Image-Build-Scan-Push-Job
 
-    uses: ./.github/workflows/reusable-image-sign.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-image-sign.yml@main
 
     with:
       service-name: ${{ inputs.service-name }}
@@ -306,7 +302,7 @@ jobs:
     needs:
       - Image-Build-Scan-Push-Job
 
-    uses: ./.github/workflows/reusable-sbom-attestation.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-sbom-attestation.yml@main
 
     with:
       service-name: ${{ inputs.service-name }}
@@ -329,7 +325,7 @@ jobs:
     needs:
       - Image-Build-Scan-Push-Job
 
-    uses: ./.github/workflows/reusable-update-helm-values.yml
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-update-helm-values.yml@main
 
     with:
       service-name: ${{ inputs.service-name }}
