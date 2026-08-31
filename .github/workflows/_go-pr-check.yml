@@ -85,7 +85,7 @@ jobs:
 
   Codeql-Analysis-Job:
     if: ${{ inputs.codeql-scan }}
-    uses: vaheed-valaxy/central-github-actions/.github/workflows/_reusable-codeql.yml@main
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/_reusable-go-codeql.yml@main
     with:
       service-name: ${{ inputs.service-name }}
       runner: ${{ inputs.runner }}
