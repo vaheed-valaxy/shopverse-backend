@@ -59,8 +59,8 @@ jobs:
   
   Gitleaks-Job:
     if: ${{ inputs.gitleaks-scan }}
-    name: Gitleaks
-    uses: ./.github/workflows/reusable-gitleaks.yml
+    # name: Gitleaks
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-gitleaks.yml@main
     with:
       service-name: ${{ inputs.service-name }} 
       runner: ${{ inputs.runner }}
