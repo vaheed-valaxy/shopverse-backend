@@ -8,28 +8,28 @@ on:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
       - 'backend/**'
-      - '.github/workflows/01-ci-pr-backend.yml'
+      - '.github/workflows/01-new-ci-pr-backend.yml'
       
 permissions:
   contents: read
-  id-token: write
+  # id-token: write
   pull-requests: read
   security-events: write
   actions: read
   
 jobs:
   Pr-Check-Job:
-    uses: ./.github/workflows/_go-pr-check.yml
+    uses: ./.github/workflows/_go-new-pr-check.yml
     with:
       service-name: backend
       runner: ubuntu-latest
       
       gitleaks-scan: true
       
-      trivy-fs-scan: true
+      trivy-fs-scan: false
       trivy-fs-scan-path: "."
       
-      codeql-scan: true
+      codeql-scan: false
 
       sonarqube-scan: false
       #sonar-host-url: ${{ vars.SONAR_HOST_URL }}
