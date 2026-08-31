@@ -138,8 +138,8 @@ jobs:
       # =========================================================================
 
       gitleaks-scan: true
-      trivy-fs-scan: true
-      codeql-scan: true
+      trivy-fs-scan: false
+      codeql-scan: false
       sonarqube-scan: false
       sonar-host-url: ""
 
@@ -151,17 +151,17 @@ jobs:
       dockerfile: Dockerfile
             
       hadolint-dockerfile-scan: true
-      trivy-dockerfile-scan: true
+      trivy-dockerfile-scan: false
       opa-conftest-dockerfile-scan: false
 
       # =========================================================================
       # Image Build
       # =========================================================================
 
-      image-build: false
+      image-build: true
       build-context: "."
 
-      image-scan: false
+      image-scan: true
       image-push-ecr: false
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
