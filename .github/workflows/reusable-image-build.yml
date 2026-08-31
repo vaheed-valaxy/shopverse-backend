@@ -132,7 +132,7 @@ jobs:
       # Scan Docker Image using Trivy
       # -------------------------------------------------------------------
       - name: Trivy — Image vulnerability scan
-        if: ${{ inputs.image-scan }}
+        if: ${{ inputs.image-scan && inputs.image-build }}
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           version: v0.72.0
@@ -147,7 +147,7 @@ jobs:
       # Upload Scan Results to Github
       # -------------------------------------------------------------------
       - name: Upload Trivy Image SARIF to GitHub Security tab
-        if: ${{ always() && inputs.image-scan }}
+        if: ${{ always() && inputs.image-scan && hashFiles(format('trivy-image-{0}.sarif', inputs.service-name)) != '' }}
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-image-${{ inputs.service-name }}.sarif
