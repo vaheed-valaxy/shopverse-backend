@@ -40,6 +40,18 @@ on:
         type: boolean
         default: false
 
+      trivy-fs-scan-path:
+        description: "Trivy FS path to scan"
+        required: false
+        type: string
+        default: "."
+
+      trivy-fs-skip-files:
+        description: "Comma-separated files or glob patterns to skip"
+        required: false
+        type: string
+        default: "**/README.md"
+
       codeql-scan:
         description: "Enable CodeQL Scan"
         required: false
@@ -72,11 +84,13 @@ on:
         description: "Path to Dockerfile"
         required: false
         type: string
+        default: Dockerfile
 
       build-context:
         description: "Docker build context"
         required: false
         type: string
+        default: "."
 
       hadolint-dockerfile-scan:
         description: "Enable Hadolint Dockerfile Scan"
@@ -209,7 +223,11 @@ jobs:
       runner: ${{ inputs.runner }}
 
       gitleaks-scan: ${{ inputs.gitleaks-scan }}
+      
       trivy-fs-scan: ${{ inputs.trivy-fs-scan }}
+      trivy-fs-scan-path: ${{ inputs.trivy-fs-scan-path }}
+      trivy-fs-skip-files: ${{ inputs.trivy-fs-skip-files }}
+      
       codeql-scan: ${{ inputs.codeql-scan }}
 
       sonarqube-scan: ${{ inputs.sonarqube-scan }}
