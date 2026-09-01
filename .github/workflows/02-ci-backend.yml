@@ -138,7 +138,11 @@ jobs:
       # =========================================================================
 
       gitleaks-scan: true
+      
       trivy-fs-scan: false
+      trivy-fs-scan-path: "."
+      trivy-fs-skip-files: '**/README.md,**/LICENSE,**/docs/**'
+      
       codeql-scan: false
       sonarqube-scan: false
       sonar-host-url: ""
