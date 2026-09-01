@@ -143,7 +143,7 @@ jobs:
       trivy-fs-scan-path: "."
       trivy-fs-skip-files: '**/README.md,**/LICENSE,**/docs/**'
       
-      codeql-scan: false
+      codeql-scan: true
       sonarqube-scan: false
       sonar-host-url: ""
 
@@ -155,18 +155,18 @@ jobs:
       dockerfile: Dockerfile
             
       hadolint-dockerfile-scan: true
-      trivy-dockerfile-scan: false
+      trivy-dockerfile-scan: true
       opa-conftest-dockerfile-scan: false
 
       # =========================================================================
       # Image Build
       # =========================================================================
 
-      image-build: false
+      image-build: true
       build-context: "."
 
-      image-scan: false
-      image-push-ecr: false
+      image-scan: true
+      image-push-ecr: true
       
       ecr-registry: ${{ needs.Aws-Params-Job.outputs.ecr-registry }}
       ecr-repository: ${{ needs.Aws-Params-Job.outputs.ecr-repository }}
@@ -177,13 +177,13 @@ jobs:
       # Image Signing
       # =========================================================================
       
-      image-sign: false
+      image-sign: true
       
       # =========================================================================
       # SBOM
       # =========================================================================
 
-      image-sbom: false
+      image-sbom: true
 
       # =========================================================================
       # GitOps
