@@ -36,7 +36,7 @@ on:
         description: "Comma-separated files or glob patterns to skip"
         required: false
         type: string
-        default: ""
+        default: "**/README.md,**/LICENSE,**/docs/**"
 
       codeql-scan:
         description: "Enable Codeql Scan"
