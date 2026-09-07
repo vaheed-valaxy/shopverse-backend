@@ -8,14 +8,14 @@ on:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
       - 'backend/**'
-      - '.github/workflows/01-ci-pr-backend.yml'
+      - '.github/workflows/01-code-scan-backend.yml'
       
 permissions:
   contents: read
-  # id-token: write
   pull-requests: read
   security-events: write
-  actions: read
+  # id-token: write
+  # actions: read
   
 jobs:
   Code-Scan-Job:
