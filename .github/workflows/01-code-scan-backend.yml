@@ -1,0 +1,116 @@
+name: Code - Scan — Backend
+# Runs on feature/fix/chore branches.
+# Lint + test + SAST only. No Docker, no ECR, no deploy.
+on:
+  workflow_dispatch: 
+  
+  push:
+    branches: ['feat-*', 'fix-*', 'chore-*']
+    paths:
+      - 'backend/**'
+      - '.github/workflows/01-ci-pr-backend.yml'
+      
+permissions:
+  contents: read
+  # id-token: write
+  pull-requests: read
+  security-events: write
+  actions: read
+  
+jobs:
+  Code-Scan-Job:
+    uses: ./.github/workflows/_go-pr-check.yml
+    # uses: vaheed-valaxy/central-github-actions/.github/workflows/_go-pr-check.yml@main
+    with:
+      service-name: backend
+      runner: ubuntu-latest
+      
+      gitleaks-scan: true
+      
+      trivy-fs-scan: true
+      trivy-fs-scan-path: "."
+      trivy-fs-skip-files: '**/README.md,**/LICENSE,**/docs/**'
+      
+      codeql-scan: true
+
+      sonarqube-scan: false
+      # sonar-host-url: ${{ vars.SONAR_HOST_URL }}
+            
+    # secrets:
+    #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+  Create-PR-Job:
+    name: Create PR to develop branch
+    runs-on: ubuntu-latest
+    needs: Code-Scan-Job
+    
+    steps:
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+
+          BRANCH="${GITHUB_REF_NAME}"
+
+          echo "=================================================="
+          echo "Creating Pull Request"
+          echo "Source Branch : ${BRANCH}"
+          echo "Target Branch : develop"
+          echo "=================================================="
+
+          # ------------------------------------------------------------------
+          # Check whether a PR already exists
+          # ------------------------------------------------------------------
+
+          EXISTING_PR=$(gh pr list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --head "${BRANCH}" \
+            --base develop \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+
+
+          # ------------------------------------------------------------------
+          # If PR already exists, do nothing
+          # ------------------------------------------------------------------
+
+          if [ -n "${EXISTING_PR}" ]; then
+            echo "PR #${EXISTING_PR} already exists."
+            exit 0
+          fi
+
+          # ------------------------------------------------------------------
+          # Create new PR
+          # ------------------------------------------------------------------
+
+          gh pr create \
+            --repo "${GITHUB_REPOSITORY}" \
+            --head "${BRANCH}" \
+            --base develop \
+            --title "PR: ${BRANCH} -> develop" \
+            --body "$(cat <<EOF
+          ## Automated Pull Request
+
+          This PR was automatically created after all pre-PR security checks passed.
+
+          **Source branch:** \`${BRANCH}\`
+
+          **Target branch:** \`develop\`
+
+          ### Security checks passed
+
+          - Gitleaks []
+          - CodeQL []
+          - Trivy Filesystem []
+          - SonarQube []
+
+          ### Next step
+
+          After this PR is reviewed and merged into \`develop\`,
+          the backend CI workflow will build, scan, publish, sign,
+          and generate the SBOM for the application image.
+
+          EOF
+          )"
