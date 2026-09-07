@@ -1,3 +1,135 @@
+name: Code - Scan — Backend
+
+# ============================================================
+# Runs on feature/fix/chore branches.
+#
+# Code scanning only:
+#   - Gitleaks
+#   - Trivy Filesystem
+#   - CodeQL
+#   - Sonarqube
+#
+# No Docker
+# No ECR
+# No Cosign
+# No SBOM
+# No deployment
+#
+# After all scans pass, a PR is automatically created:
+#
+#   feature branch
+#        |
+#        v
+#   Code Scan
+#        |
+#        v
+#   PR -> develop
+#
+# The actual Docker build / ECR / signing / SBOM pipeline
+# runs only after the PR is merged into develop.
+# ============================================================
+
+on:
+
+  # ----------------------------------------------------------
+  # Manual execution
+  # ----------------------------------------------------------
+  workflow_dispatch:
+
+  # ----------------------------------------------------------
+  # Automatic execution
+  # ----------------------------------------------------------
+  push:
+    branches:
+      - 'feat-*'
+      - 'fix-*'
+      - 'chore-*'
+
+    paths:
+      - 'backend/**'
+      - '.github/workflows/01-code-scan.yml'
+
+
+# ============================================================
+# GITHUB TOKEN PERMISSIONS
+# ============================================================
+
+# permissions:
+#   contents: read
+#   pull-requests: write
+#   security-events: write
+
+
+# ============================================================
+# JOB 1
+# Run all code/security scans
+# ============================================================
+
+jobs:
+
+  Code-Scan-Job:
+    uses: ./.github/workflows/_go-pr-check.yml
+    permissions:
+      contents: read
+      # pull-requests: write
+      security-events: write
+      actions: read
+
+    # --------------------------------------------------------
+    # If using central reusable workflow instead:
+    #
+    # uses: vaheed-valaxy/central-github-actions/.github/workflows/_go-pr-check.yml@main
+    # --------------------------------------------------------
+
+    with:
+      service-name: backend
+      runner: ubuntu-latest
+    
+      # ------------------------------------------------------
+      # Gitleaks
+      # ------------------------------------------------------
+
+      gitleaks-scan: true
+
+      # ------------------------------------------------------
+      # Trivy Filesystem
+      # ------------------------------------------------------
+
+      trivy-fs-scan: true
+
+      trivy-fs-scan-path: "."
+
+      trivy-fs-skip-files: '**/README.md,**/LICENSE,**/docs/**'
+
+      # ------------------------------------------------------
+      # CodeQL
+      # ------------------------------------------------------
+
+      codeql-scan: false
+
+      # ------------------------------------------------------
+      # SonarQube
+      # ------------------------------------------------------
+
+      sonarqube-scan: false
+
+      # If enabled later:
+      #
+      # sonar-host-url: ${{ vars.SONAR_HOST_URL }}
+
+    # --------------------------------------------------------
+    # If SonarQube is enabled later:
+    #
+    # secrets:
+    #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # --------------------------------------------------------
+
+
+  # ==========================================================
+  # JOB 2
+  # Create PR after all scans pass
+  # ==========================================================
+
   Create-PR-Job:
     name: Create PR to develop branch
 
