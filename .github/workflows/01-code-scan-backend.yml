@@ -215,16 +215,15 @@ jobs:
 
           ### Security checks passed
 
-          - Gitleaks []
-          - CodeQL []
-          - Trivy Filesystem []
+          - Gitleaks ✅
+          - CodeQL ✅
+          - Trivy Filesystem ✅
           - SonarQube: Not enabled
 
           ### Next step
 
-          After this PR is reviewed and merged into \`develop\`,
-          the backend CI workflow will build, scan, publish, sign,
-          and generate the SBOM for the application image.
+          **After this PR is reviewed and merged into \`develop\`**,
+          >***the backend CI workflow will build, scan, publish, sign and generate the SBOM for the application image.***
 
           EOF
           )"
