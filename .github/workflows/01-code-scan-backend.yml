@@ -170,7 +170,7 @@ jobs:
             echo "  feat-*"
             echo "  fix-*"
             echo "  chore-*"
-            echo "  Found: "${BRANCH}"
+            echo "Found: "${BRANCH}"
             exit 1
           fi
 
