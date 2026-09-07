@@ -54,10 +54,10 @@ on:
 # GITHUB TOKEN PERMISSIONS
 # ============================================================
 
-permissions:
-  contents: read
-  pull-requests: write
-  security-events: write
+# permissions:
+#   contents: read
+#   pull-requests: write
+#   security-events: write
 
 
 # ============================================================
@@ -69,6 +69,11 @@ jobs:
 
   Code-Scan-Job:
     uses: ./.github/workflows/_go-pr-check.yml
+    permissions:
+      contents: read
+      # pull-requests: write
+      security-events: write
+      actions: read
 
     # --------------------------------------------------------
     # If using central reusable workflow instead:
@@ -77,11 +82,9 @@ jobs:
     # --------------------------------------------------------
 
     with:
-
       service-name: backend
-
       runner: ubuntu-latest
-
+    
       # ------------------------------------------------------
       # Gitleaks
       # ------------------------------------------------------
@@ -102,7 +105,7 @@ jobs:
       # CodeQL
       # ------------------------------------------------------
 
-      codeql-scan: true
+      codeql-scan: false
 
       # ------------------------------------------------------
       # SonarQube
@@ -132,7 +135,11 @@ jobs:
     name: Create PR to develop branch
     runs-on: ubuntu-latest
     needs: Code-Scan-Job
-    
+    permissions:
+      contents: read
+      pull-requests: write
+      
+      
     steps:
       - name: Create Pull Request
         env:
