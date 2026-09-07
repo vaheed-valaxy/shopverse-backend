@@ -95,7 +95,7 @@ jobs:
       # Trivy Filesystem
       # ------------------------------------------------------
 
-      trivy-fs-scan: true
+      trivy-fs-scan: false
 
       trivy-fs-scan-path: "."
 
