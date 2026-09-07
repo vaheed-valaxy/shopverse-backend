@@ -215,9 +215,9 @@ jobs:
 
           ### Security checks passed
 
-          - Gitleaks []
-          - CodeQL []
-          - Trivy Filesystem []
+          - Gitleaks [ ]
+          - CodeQL [ ]
+          - Trivy Filesystem [ ]
           - SonarQube: Not enabled
 
           ### Next step
