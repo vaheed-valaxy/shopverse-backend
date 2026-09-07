@@ -1,51 +1,204 @@
 name: Code - Scan — Backend
+
+# ============================================================
 # Runs on feature/fix/chore branches.
-# Lint + test + SAST only. No Docker, no ECR, no deploy.
+#
+# Code scanning only:
+#   - Gitleaks
+#   - Trivy Filesystem
+#   - CodeQL
+#   - Sonarqube
+#
+# No Docker
+# No ECR
+# No Cosign
+# No SBOM
+# No deployment
+#
+# After all scans pass, a PR is automatically created:
+#
+#   feature branch
+#        |
+#        v
+#   Code Scan
+#        |
+#        v
+#   PR -> develop
+#
+# The actual Docker build / ECR / signing / SBOM pipeline
+# runs only after the PR is merged into develop.
+# ============================================================
+
 on:
-  workflow_dispatch: 
-  
+
+  # ----------------------------------------------------------
+  # Manual execution
+  # ----------------------------------------------------------
+  workflow_dispatch:
+
+  # ----------------------------------------------------------
+  # Automatic execution
+  # ----------------------------------------------------------
   push:
-    branches: ['feat-*', 'fix-*', 'chore-*']
+    branches:
+      - 'feat-*'
+      - 'fix-*'
+      - 'chore-*'
+
     paths:
       - 'backend/**'
-      - '.github/workflows/01-ci-pr-backend.yml'
-      
-permissions:
-  contents: read
-  # id-token: write
-  pull-requests: read
-  security-events: write
-  actions: read
-  
+      - '.github/workflows/01-code-scan.yml'
+
+
+# ============================================================
+# GITHUB TOKEN PERMISSIONS
+# ============================================================
+
+# permissions:
+#   contents: read
+#   pull-requests: write
+#   security-events: write
+
+
+# ============================================================
+# JOB 1
+# Run all code/security scans
+# ============================================================
+
 jobs:
+
   Code-Scan-Job:
     uses: ./.github/workflows/_go-pr-check.yml
+    permissions:
+      contents: read
+      # pull-requests: write
+      security-events: write
+      actions: read
+
+    # --------------------------------------------------------
+    # If using central reusable workflow instead:
+    #
     # uses: vaheed-valaxy/central-github-actions/.github/workflows/_go-pr-check.yml@main
+    # --------------------------------------------------------
+
     with:
       service-name: backend
       runner: ubuntu-latest
-      
+    
+      # ------------------------------------------------------
+      # Gitleaks
+      # ------------------------------------------------------
+
       gitleaks-scan: true
-      
+
+      # ------------------------------------------------------
+      # Trivy Filesystem
+      # ------------------------------------------------------
+
       trivy-fs-scan: true
+
       trivy-fs-scan-path: "."
+
       trivy-fs-skip-files: '**/README.md,**/LICENSE,**/docs/**'
-      
+
+      # ------------------------------------------------------
+      # CodeQL
+      # ------------------------------------------------------
+
       codeql-scan: false
 
+      # ------------------------------------------------------
+      # SonarQube
+      # ------------------------------------------------------
+
       sonarqube-scan: false
+
+      # If enabled later:
+      #
       # sonar-host-url: ${{ vars.SONAR_HOST_URL }}
-            
+
+    # --------------------------------------------------------
+    # If SonarQube is enabled later:
+    #
     # secrets:
     #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # --------------------------------------------------------
 
+
+  # ==========================================================
+  # JOB 2
+  # Create PR after all scans pass
+  # ==========================================================
 
   Create-PR-Job:
     name: Create PR to develop branch
+
     runs-on: ubuntu-latest
-    needs: Code-Scan-Job
-    
+
+    needs:
+      - Code-Scan-Job
+
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
+
+      - name: Debug GitHub Token
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+
+          echo "=================================================="
+          echo "GitHub Actions Token Debug"
+          echo "=================================================="
+
+          echo "Repository:"
+          echo "${GITHUB_REPOSITORY}"
+
+          echo ""
+          echo "Branch:"
+          echo "${GITHUB_REF_NAME}"
+
+          echo ""
+          echo "Event:"
+          echo "${GITHUB_EVENT_NAME}"
+
+          echo ""
+          echo "Actor:"
+          echo "${GITHUB_ACTOR}"
+
+          echo ""
+          echo "Checking repository access..."
+          
+          gh api \
+            "/repos/${GITHUB_REPOSITORY}" \
+            --jq '.full_name'
+
+          echo ""
+          echo "Checking existing PRs..."
+
+          gh pr list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --head "${GITHUB_REF_NAME}" \
+            --base develop \
+            --state open \
+            --json number,title
+
+          echo ""
+          echo "Checking token permissions..."
+
+          gh api \
+            -i \
+            "/repos/${GITHUB_REPOSITORY}" \
+            | grep -i "x-oauth-scopes" || true
+
+          echo ""
+          echo "=================================================="
+          echo "Debug completed"
+          echo "=================================================="
+
+
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ github.token }}
@@ -59,10 +212,6 @@ jobs:
           echo "Target Branch : develop"
           echo "=================================================="
 
-          # ------------------------------------------------------------------
-          # Check whether a PR already exists
-          # ------------------------------------------------------------------
-
           EXISTING_PR=$(gh pr list \
             --repo "${GITHUB_REPOSITORY}" \
             --head "${BRANCH}" \
@@ -71,46 +220,14 @@ jobs:
             --json number \
             --jq '.[0].number')
 
-
-          # ------------------------------------------------------------------
-          # If PR already exists, do nothing
-          # ------------------------------------------------------------------
-
           if [ -n "${EXISTING_PR}" ]; then
             echo "PR #${EXISTING_PR} already exists."
             exit 0
           fi
-
-          # ------------------------------------------------------------------
-          # Create new PR
-          # ------------------------------------------------------------------
 
           gh pr create \
             --repo "${GITHUB_REPOSITORY}" \
             --head "${BRANCH}" \
             --base develop \
             --title "PR: ${BRANCH} -> develop" \
-            --body "$(cat <<EOF
-          ## Automated Pull Request
-
-          This PR was automatically created after all pre-PR security checks passed.
-
-          **Source branch:** \`${BRANCH}\`
-
-          **Target branch:** \`develop\`
-
-          ### Security checks passed
-
-          - Gitleaks []
-          - CodeQL []
-          - Trivy Filesystem []
-          - SonarQube []
-
-          ### Next step
-
-          After this PR is reviewed and merged into \`develop\`,
-          the backend CI workflow will build, scan, publish, sign,
-          and generate the SBOM for the application image.
-
-          EOF
-          )"
+            --body "Automated PR after successful security scans."
