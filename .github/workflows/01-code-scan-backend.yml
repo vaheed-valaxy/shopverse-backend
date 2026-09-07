@@ -95,7 +95,7 @@ jobs:
       # Trivy Filesystem
       # ------------------------------------------------------
 
-      trivy-fs-scan: false
+      trivy-fs-scan: true
 
       trivy-fs-scan-path: "."
 
@@ -170,7 +170,6 @@ jobs:
             echo "  feat-*"
             echo "  fix-*"
             echo "  chore-*"
-            echo "Found: "${BRANCH}"
             exit 1
           fi
 
@@ -216,9 +215,9 @@ jobs:
 
           ### Security checks passed
 
-          - Gitleaks ✅
-          - CodeQL ✅
-          - Trivy Filesystem ✅
+          - Gitleaks []
+          - CodeQL []
+          - Trivy Filesystem []
           - SonarQube: Not enabled
 
           ### Next step
