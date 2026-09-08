@@ -218,7 +218,7 @@ jobs:
           - ✔️ Gitleaks 
           - ✔️ CodeQL 
           - ✔️ Trivy Filesystem 
-          - SonarQube: Not enabled
+          - 🚫 SonarQube: Not enabled
 
           ### Next step
 
