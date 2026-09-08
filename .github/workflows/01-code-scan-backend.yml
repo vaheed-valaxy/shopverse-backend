@@ -65,7 +65,7 @@ on:
 # Run all code/security scans
 # ============================================================
 env:
-  service-name: backend
+  SERVICE_NAME: backend
 
 jobs:
 
@@ -84,7 +84,7 @@ jobs:
     # --------------------------------------------------------
 
     with:
-      service-name: "$service-name"
+      service-name: "$SERVICE_NAME" 
       runner: ubuntu-latest
     
       # ------------------------------------------------------
@@ -225,7 +225,7 @@ jobs:
 
           ### Security checks passed
 
-          - [ ] Gitleaks  
+          - [x] Gitleaks  
           - [ ] CodeQL  
           - [ ] Trivy Filesystem  
           - [ ] SonarQube: Not enabled  
