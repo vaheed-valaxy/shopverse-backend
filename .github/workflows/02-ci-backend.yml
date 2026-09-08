@@ -45,12 +45,12 @@ on:
       - develop
       - 'release/**'
 
-    paths:
-      - 'backend/**'
-      - '.github/workflows/02-ci-backend.yml'
-      - '.github/workflows/_go-build.yml'
-      - '.github/workflows/_go-pr-check.yml'
-      - '.github/workflows/reusable-*.yml'
+    # paths:
+    #   - 'backend/**'
+    #   - '.github/workflows/02-ci-backend.yml'
+    #   - '.github/workflows/_go-build.yml'
+    #   - '.github/workflows/_go-pr-check.yml'
+    #   - '.github/workflows/reusable-*.yml'
 
 # =======================================================================================
 # Permissions
