@@ -183,7 +183,7 @@ jobs:
           - ✔️ Trivy Filesystem  
           - 🚫 SonarQube: Not enabled  
 
-          ### Next step
+          ### Next step:
 
           **After this PR is reviewed and merged into \`develop\`**,
           >***- The backend CI workflow will build, scan, publish, sign and generate the SBOM for the application image.***
