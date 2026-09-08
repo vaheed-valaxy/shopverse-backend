@@ -84,7 +84,7 @@ jobs:
     # --------------------------------------------------------
 
     with:
-      service-name: backend
+      service-name: "$service-name"
       runner: ubuntu-latest
     
       # ------------------------------------------------------
@@ -144,7 +144,7 @@ jobs:
       
     env:
       GH_TOKEN: ${{ github.token }}
-      SVC: $service-name
+      SVC: "$service-name"
       ACTOR: ${{ github.actor }}
       SERVER_URL: ${{ github.server_url }}
       REPOSITORY: ${{ github.repository }}
