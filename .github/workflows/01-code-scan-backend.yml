@@ -19,7 +19,7 @@ on:
 
 env:
   SERVICE_NAME: backend
-
+  TARGET_BRANCH: develop
 
 jobs:
 
@@ -39,9 +39,10 @@ jobs:
         id: config
         run: |
           echo "SERVICE_NAME=${SERVICE_NAME}"
-
-          echo "service-name=${SERVICE_NAME}" >> "$GITHUB_OUTPUT"
-
+          echo "TARGET_BRANCH=${TARGET_BRANCH}"
+          
+          echo "service_name=${SERVICE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "target_branch=${TARGET_BRANCH}" >> "$GITHUB_OUTPUT"
 
   # ==========================================================
   # JOB 2 — Code / Security scans
@@ -58,7 +59,7 @@ jobs:
       actions: read   # CodeQL Analysis
 
     with:
-      service-name: ${{ needs.Config-Job.outputs.service-name }}
+      service-name: ${{ needs.Config-Job.outputs.service_name }}
       runner: ubuntu-latest
 
       gitleaks-scan: true
@@ -88,14 +89,13 @@ jobs:
       - Config-Job
       - Code-Scan-Job
 
-
     permissions:
       contents: read
       pull-requests: write
 
     env:
       GH_TOKEN: ${{ github.token }}
-      SVC: ${{ needs.Config-Job.outputs.service-name }}
+      SVC: ${{ needs.Config-Job.outputs.service_name }}
       ACTOR: ${{ github.actor }}
       SERVER_URL: ${{ github.server_url }}
       REPOSITORY: ${{ github.repository }}
@@ -107,6 +107,7 @@ jobs:
         run: |
 
           SOURCE_BRANCH="${GITHUB_REF_NAME}"
+          TARGET_BRANCH="${{ needs.Config-Job.outputs.target_branch }}"
           
           echo "=================================================="
           echo "Creating Pull Request"
@@ -139,7 +140,7 @@ jobs:
           EXISTING_PR=$(gh pr list \
             --repo "${GITHUB_REPOSITORY}" \
             --head "${SOURCE_BRANCH}" \
-            --base develop \
+            --base "${TARGET_BRANCH}" \
             --state open \
             --json number \
             --jq '.[0].number')
@@ -161,7 +162,7 @@ jobs:
             --repo "${GITHUB_REPOSITORY}" \
             --head "${SOURCE_BRANCH}" \
             --base develop \
-            --title "PR: ${SOURCE_BRANCH} -> develop" \
+            --title "PR: ${SOURCE_BRANCH} -> ${TARGET_BRANCH}" \
             --body "$(cat <<EOF
           ## Automated Pull Request
 
