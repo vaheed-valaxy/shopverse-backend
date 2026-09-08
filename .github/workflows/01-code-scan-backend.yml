@@ -42,7 +42,7 @@ jobs:
           
           if [[ ! "${SOURCE_BRANCH}" =~ ^(feat|fix|chore)- ]]; then
             echo "ERROR: Unsupported branch '${SOURCE_BRANCH}'."
-            echo "Expected branch pattern:"
+            echo "Expected branch pattern: (to run workflow)"
             echo "  feat-*"
             echo "  fix-*"
             echo "  chore-*"
@@ -139,7 +139,7 @@ jobs:
           if [[ ! "${SOURCE_BRANCH}" =~ ^(feat|fix|chore)- ]]; then
 
             echo "ERROR: Unsupported branch '${SOURCE_BRANCH}'."
-            echo "Expected branch pattern:"
+            echo "Expected branch pattern: (to run workflow)"
             echo "  feat-*"
             echo "  fix-*"
             echo "  chore-*"
@@ -147,7 +147,6 @@ jobs:
             exit 1
 
           fi
-
 
           # --------------------------------------------------
           # Check whether a PR already exists
