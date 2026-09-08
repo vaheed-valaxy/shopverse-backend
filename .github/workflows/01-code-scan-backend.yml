@@ -36,6 +36,20 @@ jobs:
       target_branch: ${{ steps.config.outputs.target_branch }}
 
     steps:
+      - name: Validate Branch name
+        run: |
+          SOURCE_BRANCH="${GITHUB_REF_NAME}"
+          
+          if [[ ! "${SOURCE_BRANCH}" =~ ^(feat|fix|chore)- ]]; then
+            echo "ERROR: Unsupported branch '${SOURCE_BRANCH}'."
+            echo "Expected branch pattern:"
+            echo "  feat-*"
+            echo "  fix-*"
+            echo "  chore-*"
+
+            exit 1
+          fi
+      
       - name: Export configuration
         id: config
         run: |
