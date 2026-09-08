@@ -112,6 +112,7 @@ jobs:
           
           echo "=================================================="
           echo "Creating Pull Request"
+          echo " -------------------------------------------------"
           echo "Service       : ${SVC}"
           echo "Source Branch : ${SOURCE_BRANCH}"
           echo "Target Branch : develop"
