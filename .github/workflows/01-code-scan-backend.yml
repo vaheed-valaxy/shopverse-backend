@@ -55,6 +55,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
+      actions: read   # CodeQL Analysis
 
     with:
       service-name: ${{ needs.Config-Job.outputs.service-name }}
