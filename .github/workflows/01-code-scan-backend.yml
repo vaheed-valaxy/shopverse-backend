@@ -64,6 +64,8 @@ on:
 # JOB 1
 # Run all code/security scans
 # ============================================================
+env:
+  service-name: backend
 
 jobs:
 
@@ -95,7 +97,7 @@ jobs:
       # Trivy Filesystem
       # ------------------------------------------------------
 
-      trivy-fs-scan: true
+      trivy-fs-scan: false
 
       trivy-fs-scan-path: "."
 
@@ -135,15 +137,21 @@ jobs:
     name: Create PR to develop branch
     runs-on: ubuntu-latest
     needs: Code-Scan-Job
+    
     permissions:
       contents: read
       pull-requests: write
       
-      
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SVC: $service-name
+      ACTOR: ${{ github.actor }}
+      SERVER_URL: ${{ github.server_url }}
+      REPOSITORY: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+          
     steps:
       - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           # --------------------------------------------------
           # Get source branch
@@ -209,16 +217,18 @@ jobs:
 
           This PR was automatically created after all pre-PR security checks passed.
 
+          **Service:** \`${SVC}\`
+          **Proposed By:** \`${ACTOR}\`
           **Source branch:** \`${BRANCH}\`
-
           **Target branch:** \`develop\`
+          **Workflow run:** ${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID} 
 
           ### Security checks passed
 
-          - ✔️ Gitleaks 
-          - ✔️ CodeQL 
-          - ✔️ Trivy Filesystem 
-          - 🚫 SonarQube: Not enabled
+          - [ ] Gitleaks  
+          - [ ] CodeQL  
+          - [ ] Trivy Filesystem  
+          - [ ] SonarQube: Not enabled  
 
           ### Next step
 
