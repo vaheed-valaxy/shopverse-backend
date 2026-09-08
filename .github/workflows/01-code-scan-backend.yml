@@ -176,10 +176,10 @@ jobs:
 
           ### Security checks passed
 
-          - [x] Gitleaks  
+          - [✔️] Gitleaks  
           - [ ] CodeQL  
           - [ ] Trivy Filesystem  
-          - [ ] SonarQube: Not enabled  
+          - [🚫 ] SonarQube: Not enabled  
 
           ### Next step
 
