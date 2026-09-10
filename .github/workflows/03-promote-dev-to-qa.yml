@@ -23,4 +23,4 @@ jobs:
       aws-region: us-east-1
       aws-ecr-qa-promotion-role-arn: arn:aws:iam::123456789012:role/shopverse-qa-promotion
     secrets:
-      GITOPS_REPOSITORY_TOKEN: ${{ secrets.GITOPS_REPOSITORY_TOKEN }}
+      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
