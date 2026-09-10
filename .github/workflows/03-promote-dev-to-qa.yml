@@ -11,56 +11,16 @@ permissions:
   contents: read
   id-token: write
 
-env:
-  GITOPS_REPO: ${{ vars.GITOPS_REPO }}
-  # GITOPS_OWNER: vaheed-valaxy
-
-  DEV_REPO: shopverse-dev/backend
-  QA_REPO: shopverse-qa/backend
-
-  AWS_ECR_QA_PROMOTION_ROLE_ARN: ${{ secrets.AWS_ECR_QA_PROMOTION_ROLE_ARN }}
-  AWS_REGION: us-east-1
-  
-  # CRANE_VERSION: v0.21.7
-
-jobs:
-  Config-Job:
-    name: Configuration Job
-    runs-on: ubuntu-latest
-
-    outputs:
-      gitops-repo: ${{ steps.load-values.outputs.gitops-repo }}
-      dev-repo: ${{ steps.load-values.outputs.dev-repo }}
-      qa-repo: ${{ steps.load-values.outputs.qa-repo }}
-      aws-region: ${{ steps.load-values.outputs.aws-region }}
-      aws-ecr-qa-promotion-role-arn: ${{ steps.load-values.outputs.aws-ecr-qa-promotion-role-arn }}
-      # gitops-owner: ${{ steps.load-values.outputs.gitops-owner }}
-      
-    steps:
-      - name: Load Env Values
-        id: load-values
-        run: |
-          echo "gitops-repo=$GITOPS_REPO" >> "GITHUB_OUTPUT"
-          echo "dev-repo=$DEV_REPO" >> "GITHUB_OUTPUT"
-          echo "qa-repo=$QA_REPO" >> "GITHUB_OUTPUT"
-          echo "aws-region=$AWS_REGION" >> "GITHUB_OUTPUT"
-          echo "aws-ecr-qa-promotion-role-arn=$AWS_ECR_QA_PROMOTION_ROLE_ARN" >> "GITHUB_OUTPUT"
-          # echo "gitops-owner=$GITOPS_OWNER" >> "GITHUB_OUTPUT"
-
-          echo "gitops-repo: $GITOPS_REPO" 
-          echo "dev-repo: $DEV_REPO" 
-          echo "qa-repo: $QA_REPO" 
-          echo "aws-region: $AWS_REGION" 
-          echo "aws-ecr-qa-promotion-role-arn: $AWS_ECR_QA_PROMOTION_ROLE_ARN"
-          
-  Promote-Job:
-    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-dev-to-qa.yml@main
-    needs: Config-Job
+jobs:        
+  promote-dev-to-qa:
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/promote-dev-to-qa.yml@main
     with:
       service-name: backend
-      gitops-repo: ${{ needs.Config-Job.outputs.gitops-repo }}
-      dev-repo: ${{ needs.Config-Job.outputs.dev-repo }}
-      qa-repo: ${{ needs.Config-Job.outputs.qa-repo }}
-      aws-region: ${{ needs.Config-Job.outputs.aws-region }}
-      aws-ecr-qa-promotion-role-arn: ${{ needs.Config-Job.outputs.aws-ecr-qa-promotion-role-arn }}
-      # gitops-owner: ${{ needs.Config-Job.outputs.gitops-owner }}
+      gitops-repo: shopverse-gitops
+      gitops-owner: vaheed-valaxy
+      dev-repo: shopverse-dev/backend
+      qa-repo: shopverse-qa/backend
+      aws-region: us-east-1
+      aws-ecr-qa-promotion-role-arn: arn:aws:iam::123456789012:role/shopverse-qa-promotion
+    secrets:
+      GITOPS_REPOSITORY_TOKEN: ${{ secrets.GITOPS_REPOSITORY_TOKEN }}
