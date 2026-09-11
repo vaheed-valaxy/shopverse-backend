@@ -14,7 +14,7 @@ permissions:
 
 jobs:        
   promote-dev-to-qa:
-    uses: vaheed-valaxy/central-github-actions/.github/workflows/promote-dev-to-qa.yml@main
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-dev-to-qa.yml@main
     with:
       service-name: backend
       gitops-repo: shopverse-gitops
