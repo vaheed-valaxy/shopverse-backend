@@ -18,8 +18,8 @@ jobs:
       service-name: backend
       gitops-repo: shopverse-gitops
       gitops-owner: vaheed-valaxy
-      dev-repo: shopverse-dev/backend
-      qa-repo: shopverse-qa/backend
+      dev-ecr-repo: shopverse-dev/backend
+      qa-ecr-repo: shopverse-qa/backend
       aws-region: us-east-1
       aws-ecr-qa-promotion-role-arn: ${{ vars.AWS_ECR_ROLE_ARN }} # arn:aws:iam::123456789012:role/shopverse-qa-promotion
     secrets:
