@@ -1,4 +1,4 @@
-name: Code - Scan — Backend  
+name: Code - Scan — Backend
 
 on:
   workflow_dispatch:
