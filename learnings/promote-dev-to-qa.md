@@ -1,5 +1,5 @@
 ## Your final flow is now
-
+```text
 DEV GitOps digest
         ↓
 verify digest exists in DEV ECR
@@ -43,3 +43,4 @@ same digest already there?
                     merge
                        ↓
                       QA
+```
