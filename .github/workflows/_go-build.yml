@@ -181,6 +181,12 @@ on:
         required: false
         type: boolean
         default: false
+
+      gitops-owner:
+        description: "GitOps Repository Owner"
+        required: false
+        type: string
+        default: ""
         
       gitops-repo:
         description: "GitOps Repository"
@@ -349,7 +355,7 @@ jobs:
       service-name: ${{ inputs.service-name }}
       runner: ${{ inputs.runner }}
 
-      gitops-owner: ${{ inputs.gitops-repo }}
+      gitops-owner: ${{ inputs.gitops-owner }}
       gitops-repo: ${{ inputs.gitops-repo }}
 
       helm-values-file: ${{ inputs.helm-values-file }}
