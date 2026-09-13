@@ -72,6 +72,7 @@ env:
   AWS_REGION: us-east-1
   AWS_ECR_ROLE_ARN: ${{ vars.AWS_ECR_ROLE_ARN }}
   ECR_REPOSITORY: "shopverse-dev/backend"
+  GITOPS_OWNER: ${{ vars.GITOPS_OWNER }}
   GITOPS_REPO: ${{ vars.GITOPS_REPO }}
 
 # =======================================================================================
@@ -190,6 +191,7 @@ jobs:
       # =========================================================================
       
       update-helm-values: true
+      gitops-owner: ${{ vars.GITOPS_OWNER }}
       gitops-repo: ${{ vars.GITOPS_REPO }}
       helm-values-file: envs/dev/values-backend.yaml
 
