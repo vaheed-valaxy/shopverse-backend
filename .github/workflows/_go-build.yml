@@ -332,11 +332,11 @@ jobs:
       aws-ecr-role-arn: ${{ inputs.aws-ecr-role-arn }}
 
   # ============================================================
-  # 6. UPDATE GITOPS + CREATE PR
+  # 6. UPDATE GITOPS 
   # ============================================================
 
-  Update-Helm-Values-Pr-Job:
-    name: Update Helm Values and Create PR
+  Update-Helm-Values-Job:
+    name: Update Helm Values
 
     if: ${{ inputs.image-build && inputs.update-helm-values }}
 
@@ -349,6 +349,7 @@ jobs:
       service-name: ${{ inputs.service-name }}
       runner: ${{ inputs.runner }}
 
+      gitops-owner: ${{ inputs.gitops-repo }}
       gitops-repo: ${{ inputs.gitops-repo }}
 
       helm-values-file: ${{ inputs.helm-values-file }}
@@ -357,3 +358,31 @@ jobs:
         
     secrets:
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+
+
+  # ============================================================
+  # 6. UPDATE GITOPS + CREATE PR
+  # ============================================================
+
+  # Update-Helm-Values-Pr-Job:
+  #   name: Update Helm Values and Create PR
+
+  #   if: ${{ inputs.image-build && inputs.update-helm-values }}
+
+  #   needs:
+  #     - Image-Build-Scan-Push-Job
+
+  #   uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-update-helm-values.yml@main
+
+  #   with:
+  #     service-name: ${{ inputs.service-name }}
+  #     runner: ${{ inputs.runner }}
+
+  #     gitops-repo: ${{ inputs.gitops-repo }}
+
+  #     helm-values-file: ${{ inputs.helm-values-file }}
+  #     image: ${{ needs.Image-Build-Scan-Push-Job.outputs.image }}        
+  #     image-digest: ${{ needs.Image-Build-Scan-Push-Job.outputs.image_digest }}
+        
+  #   secrets:
+  #     GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
