@@ -349,7 +349,7 @@ jobs:
     needs:
       - Image-Build-Scan-Push-Job
 
-    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-update-helm-values.yml@main
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-update-dev-helm-values.yml@main
 
     with:
       service-name: ${{ inputs.service-name }}
