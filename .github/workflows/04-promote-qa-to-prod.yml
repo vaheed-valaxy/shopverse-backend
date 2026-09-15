@@ -1,8 +1,8 @@
-# Triggered manually — picks up the image currently running in DEV and opens
-# a PR in the GitOps repo (vars.GITOPS_REPO) to promote it to QA.
-# QA ArgoCD app auto-syncs after merge.
+# Triggered manually — picks up the image currently running in QA and opens
+# a PR in the GitOps repo (vars.GITOPS_REPO) to promote it to PROD.
+# PROD ArgoCD app manual deploy after merge.
 
-name: Promote — Backend - DEV - To - QA
+name: Promote — Backend - QA - To - PROD
 
 on:
   workflow_dispatch: 
@@ -14,7 +14,7 @@ permissions:
 
 jobs:        
   promote-dev-to-qa:
-    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-dev-to-qa.yml@main
+    uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-qa-to-prod.yml@main
     with:
       service-name: backend
       
