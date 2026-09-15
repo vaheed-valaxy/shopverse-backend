@@ -18,8 +18,8 @@ jobs:
     with:
       service-name: backend
       
-      qa_values_file: envs/qa/values-backend.yaml
-      prod_values_file: envs/prod/values-backend.yaml
+      qa-values-file: envs/qa/values-backend.yaml
+      prod-values-file: envs/prod/values-backend.yaml
       
       gitops-repo: shopverse-gitops
       gitops-owner: vaheed-valaxy
