@@ -17,13 +17,18 @@ jobs:
     uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-dev-to-qa.yml@main
     with:
       service-name: backend
+      
       dev_values_file: envs/dev/values-backend.yaml
       qa_values_file: envs/qa/values-backend.yaml
+      
       gitops-repo: shopverse-gitops
       gitops-owner: vaheed-valaxy
+      
       dev-ecr-repo: shopverse-dev/backend
       qa-ecr-repo: shopverse-qa/backend
+      
       aws-region: us-east-1
       aws-ecr-qa-promotion-role-arn: ${{ vars.AWS_ECR_ROLE_ARN }} # arn:aws:iam::123456789012:role/shopverse-qa-promotion
+  
     secrets:
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
