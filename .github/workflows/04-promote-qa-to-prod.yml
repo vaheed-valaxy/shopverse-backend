@@ -43,8 +43,8 @@ jobs:
       aws-region: us-east-1
       aws-ecr-prod-promotion-role-arn: ${{ vars.AWS_ECR_ROLE_ARN }} # arn:aws:iam::123456789012:role/shopverse-qa-promotion
 
-      # cosign-certificate-identity-regexp:
-      # cosign-oidc-issuer:
+      cosign-certificate-identity-regexp: ""
+      cosign-oidc-issuer: https://token.actions.githubusercontent.com
   
     secrets:
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
