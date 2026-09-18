@@ -12,7 +12,20 @@ permissions:
   id-token: write
   pull-requests: write
 
-jobs:        
+jobs:   
+
+  oidc-debug:
+    name: Debug GitHub OIDC Claims
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Show OIDC claims
+        uses: github/actions-oidc-debugger@main
+        
   promote-dev-to-qa:
     uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-qa-to-prod.yml@main
     with:
@@ -29,6 +42,9 @@ jobs:
       
       aws-region: us-east-1
       aws-ecr-prod-promotion-role-arn: ${{ vars.AWS_ECR_ROLE_ARN }} # arn:aws:iam::123456789012:role/shopverse-qa-promotion
+
+      # cosign-certificate-identity-regexp:
+      # cosign-oidc-issuer:
   
     secrets:
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
