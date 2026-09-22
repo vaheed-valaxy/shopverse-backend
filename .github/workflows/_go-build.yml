@@ -341,6 +341,7 @@ jobs:
       aws-ecr-role-arn: ${{ inputs.aws-ecr-role-arn }}
 
       cosign-certificate-identity-regexp: ""
+      cosign-sbom-attestation-certificate-identity-regexp: ""
       cosign-oidc-issuer: https://token.actions.githubusercontent.com
 
   # ============================================================
