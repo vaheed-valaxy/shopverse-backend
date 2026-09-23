@@ -14,17 +14,17 @@ permissions:
 
 jobs:   
 
-  oidc-debug:
-    name: Debug GitHub OIDC Claims
-    runs-on: ubuntu-latest
+  # oidc-debug:
+  #   name: Debug GitHub OIDC Claims
+  #   runs-on: ubuntu-latest
 
-    permissions:
-      id-token: write
-      contents: read
+  #   permissions:
+  #     id-token: write
+  #     contents: read
 
-    steps:
-      - name: Show OIDC claims
-        uses: github/actions-oidc-debugger@main
+  #   steps:
+  #     - name: Show OIDC claims
+  #       uses: github/actions-oidc-debugger@main
         
   promote-dev-to-qa:
     uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-qa-to-prod.yml@main
