@@ -43,9 +43,13 @@ jobs:
       aws-region: us-east-1
       aws-ecr-prod-promotion-role-arn: ${{ vars.AWS_ECR_ROLE_ARN }} # arn:aws:iam::123456789012:role/shopverse-qa-promotion
 
-      cosign-certificate-identity-regexp: '^https://github\.com/vaheed-valaxy/central-github-actions/\.github/workflows/reusable-image-sign\.yml@refs/heads/main$'
-      cosign-sbom-attestation-certificate-identity-regexp: '^https://github\.com/vaheed-valaxy/central-github-actions/\.github/workflows/reusable-sbom-attestation\.yml@refs/heads/main$'
       cosign-oidc-issuer: 'https://token.actions.githubusercontent.com'
+      cosign-certificate-identity: 'https://github.com/vaheed-valaxy/central-github-actions/.github/workflows/reusable-image-sign.yml@@refs/heads/main'
+      cosign-sbom-attestation-certificate-identity: 'https://github.com/vaheed-valaxy/central-github-actions/.github/workflows/reusable-sbom-attestation.yml@refs/heads/main'
+      
+      # cosign-certificate-identity-regexp: '^https://github\.com/vaheed-valaxy/central-github-actions/\.github/workflows/reusable-image-sign\.yml@refs/heads/main$'
+      # cosign-sbom-attestation-certificate-identity-regexp: '^https://github\.com/vaheed-valaxy/central-github-actions/\.github/workflows/reusable-sbom-attestation\.yml@refs/heads/main$'
+      
   
     secrets:
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
