@@ -26,7 +26,7 @@ jobs:
   #     - name: Show OIDC claims
   #       uses: github/actions-oidc-debugger@main    # This action gives error
         
-  promote-dev-to-qa:
+  promote-qa-to-prod:
     uses: vaheed-valaxy/central-github-actions/.github/workflows/reusable-promote-qa-to-prod.yml@main
     with:
       service-name: backend
