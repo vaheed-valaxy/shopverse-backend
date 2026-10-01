@@ -9,7 +9,7 @@ on:
       - 'fix-*'
       - 'chore-*'
     paths:
-      - 'backend/**'
+      - 'shopverse-backend/**'
       - '.github/workflows/01-code-scan-backend.yml'
 
 
