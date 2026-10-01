@@ -3,12 +3,9 @@
 # =======================================================================================
 
 name: Reusable — GO Build & Security Gates
-
 on:
   workflow_call:
-
     inputs:
-
       # ======================================================
       # General
       # ======================================================
@@ -23,6 +20,7 @@ on:
         required: false
         type: string
         default: ubuntu-latest
+
 
       # ======================================================
       # Application Scans
@@ -70,6 +68,7 @@ on:
         type: string
         default: ""
 
+
       # ======================================================
       # Dockerfile Scans
       # ======================================================
@@ -109,6 +108,13 @@ on:
         required: false
         type: boolean
         default: false
+
+      opa-policy:
+        description: "OPA Policy file/dir path"
+        required: false
+        type: string
+        default: ""
+        
 
       # ======================================================
       # Image Build
@@ -155,6 +161,7 @@ on:
         required: false
         type: string
         default: ""
+        
 
       # ======================================================
       # Image Security
@@ -171,6 +178,7 @@ on:
         required: false
         type: boolean
         default: false
+        
 
       # ======================================================
       # GitOps
@@ -199,6 +207,7 @@ on:
         required: false
         type: string
         default: ""
+        
 
     # ==========================================================
     # Secrets
@@ -211,7 +220,6 @@ on:
 
       GITOPS_TOKEN:
         required: true
-
 
 jobs:
 
@@ -241,6 +249,7 @@ jobs:
 
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
 
   # ============================================================
   # 2. DOCKERFILE SCAN
@@ -258,8 +267,11 @@ jobs:
       dockerfile: ${{ inputs.dockerfile }}
 
       hadolint-dockerfile-scan: ${{ inputs.hadolint-dockerfile-scan }}     
-      trivy-dockerfile-scan: ${{ inputs.trivy-dockerfile-scan }}        
+      trivy-dockerfile-scan: ${{ inputs.trivy-dockerfile-scan }}   
+      
       opa-conftest-dockerfile-scan: ${{ inputs.opa-conftest-dockerfile-scan }}
+      opa-policy: ${{ inputs.opa-policy }}
+
         
   # ============================================================
   # 3. BUILD + SCAN + PUSH IMAGE
@@ -290,6 +302,7 @@ jobs:
 
       aws-region: ${{ inputs.aws-region }}
       aws-ecr-role-arn: ${{ inputs.aws-ecr-role-arn }}
+      
 
   # ============================================================
   # 4. COSIGN IMAGE SIGNING
@@ -317,6 +330,7 @@ jobs:
       cosign-certificate-identity-regexp: ""
       cosign-oidc-issuer: https://token.actions.githubusercontent.com
       
+      
   # ============================================================
   # 5. SBOM GENERATION + ATTESTATION
   # ============================================================
@@ -342,6 +356,7 @@ jobs:
 
       cosign-sbom-attestation-certificate-identity-regexp: ""
       cosign-oidc-issuer: https://token.actions.githubusercontent.com
+      
 
   # ============================================================
   # 6. UPDATE GITOPS 
