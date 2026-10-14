@@ -68,14 +68,16 @@ permissions:
 
 env:
 
+  RUNS_ON: ubuntu-latest
+  ECR_REPOSITORY: "shopverse-dev/backend"
+
   AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
   AWS_REGION: us-east-1
-  AWS_ECR_ROLE_ARN: ${{ vars.AWS_ECR_ROLE_ARN }}
-  
-  ECR_REPOSITORY: "shopverse-dev/backend"
-  
+    
   GITOPS_OWNER: ${{ vars.GITOPS_OWNER }}
   GITOPS_REPO: ${{ vars.GITOPS_REPO }}
+
+  # AWS_ECR_ROLE_ARN: ${{ vars.AWS_ECR_ROLE_ARN }}
 
 # =======================================================================================
 # Jobs
@@ -107,9 +109,11 @@ jobs:
           
       - name: Construct AWS Parameters
         id: aws-params
+        env:
+          # AWS_ECR_ROLE_ARN: ${{ runner.environment == 'github-hosted' && vars.AWS_ECR_ROLE_ARN || '' }}
+          AWS_ECR_ROLE_ARN: ${{ env.RUNS_ON == 'ubuntu-latest' && vars.AWS_ECR_ROLE_ARN || '' }}
+          ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         run: |
-          ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-          
           echo "ecr-registry=$ECR_REGISTRY" >> "$GITHUB_OUTPUT"
           echo "ecr-repository=$ECR_REPOSITORY" >> "$GITHUB_OUTPUT"
           echo "aws-region=$AWS_REGION" >> "$GITHUB_OUTPUT"
